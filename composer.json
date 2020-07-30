@@ -1,0 +1,13 @@
+{
+    "require": {
+        "roave/better-reflection": "^4.3",
+        "symfony/console": "^5.1",
+        "nategood/httpful": "^0.3.2",
+        "spatie/emoji": "^2.1"
+    },
+    "autoload": {
+      "psr-4": {
+          "Testomatio\\": "src/"
+      }
+    }
+}
