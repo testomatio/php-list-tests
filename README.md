@@ -1,4 +1,4 @@
-#  List Tests <sub>by [Testomat.io](https://testomat.io)</sub>
+# 🌀 List Tests <sup><sub>by [Testomat.io](https://testomat.io)</sub></sup>
 
 This CLI utility prints all tests in PHP project **without executing them**.
 Easily check the number tests and get live documentation for your tests in markdown format!
@@ -11,7 +11,7 @@ This CLI script is also used to import tests into Testomat.io application.
 
 ```
 composer require testomatio/list-tests
-``` 
+```
 
 ## Usage
 
@@ -40,7 +40,7 @@ use `PREPEND_URL` environment variable and set a base URL for tests files.
 PREPEND_URL=https://github.com/testomatio/php-list-tests/tests php vendor/bin/list-tests tests --markdown tests.md 
 ```
 
-This will generate a file similar to [test-docs.md](tests-docs.md) in this repository.
+This will generate a file similar to [test-docs.md](test-docs.md) in this repository.
 
 ## Import into [Testomat.io](https://testomat.io)
 
@@ -50,5 +50,4 @@ Pass in TESTOMATIO API KEY of your project to import tests:
 ```
 TESTOMATIO={api-key} php vendor/bin/list-tests tests 
 ``` 
-
 
