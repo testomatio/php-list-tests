@@ -1,6 +1,6 @@
 {
     "require": {
-        "roave/better-reflection": "^4.3",
+        "roave/better-reflection": "^4.0",
         "symfony/console": ">3.0",
         "nategood/httpful": "^0.3.2",
         "spatie/emoji": "^2.1",
