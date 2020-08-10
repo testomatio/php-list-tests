@@ -1,9 +1,10 @@
 {
     "require": {
         "roave/better-reflection": "^4.3",
-        "symfony/console": "^5.1",
+        "symfony/console": ">3.0",
         "nategood/httpful": "^0.3.2",
-        "spatie/emoji": "^2.1"
+        "spatie/emoji": "^2.1",
+        "symfony/polyfill-php80": "^1.18"
     },
     "name": "testomatio/list-tests",
     "description":"Tests preview & import for PHPUnit & Codeception tests",

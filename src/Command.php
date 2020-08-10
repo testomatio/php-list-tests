@@ -55,7 +55,7 @@ class Command extends SymfonyCommand
 
 
         if (!getenv('TESTOMATIO')) {
-            return Command::SUCCESS;
+            return 1;
         }
         $output->writeln("<comment>Sending data to Testomat.io...</comment>\n");
         $request = new Request();
@@ -68,6 +68,6 @@ class Command extends SymfonyCommand
             return Command::FAILURE;
         }
         $output->writeln("<info>Data received by Testomat.io</info>");
-        return Command::SUCCESS;
+        return 0;
     }
 }
