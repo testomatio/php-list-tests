@@ -16,21 +16,13 @@ class TestData implements \JsonSerializable
 
     public function __construct(ReflectionMethod $method)
     {
-        $this->suites = [$this->humanize($method->getImplementingClass()->getName())];
+        $this->suites = [$this->humanize($method->getImplementingClass()->getShortName())];
         $this->name = $this->humanize($method->getName());
         $this->line = $method->getStartLine();
         $this->code = $this->formatCode($method);
         $this->file = $method->getFileName();
+
         $this->tags = $this->fetchTags($method);
-
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTags()
-    {
-        return $this->tags;
     }
 
     private function fetchTags(ReflectionMethod $method) {
@@ -51,7 +43,7 @@ class TestData implements \JsonSerializable
         }
 
         $fileLines = explode("\n", $method->getLocatedSource()->getSource());
-        $sourceLines = array_slice($fileLines, $method->getStartLine() - 1, $method->getEndLine() - $method->getStartLine() + 2);
+        $sourceLines = array_slice($fileLines, $method->getStartLine() - 1, $method->getEndLine() - $method->getStartLine() + 1);
 
         $source .= implode("\n", $sourceLines);
         return $source;
@@ -61,6 +53,10 @@ class TestData implements \JsonSerializable
     {
         $name = preg_replace('/([A-Z]+)([A-Z][a-z])/', '\\1 \\2', $name);
         $name = preg_replace('/([a-z\d])([A-Z])/', '\\1 \\2', $name);
+        $name = strtolower($name);
+
+        // remove test word from name
+        $name = preg_replace('/^test /', '', $name);
         return ucfirst($name);
     }
 
@@ -126,5 +122,13 @@ class TestData implements \JsonSerializable
     public function getFile()
     {
         return $this->file;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTags()
+    {
+        return $this->tags;
     }
 }

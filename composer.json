@@ -5,9 +5,30 @@
         "nategood/httpful": "^0.3.2",
         "spatie/emoji": "^2.1"
     },
+    "name": "testomatio/list-tests",
+    "description":"Tests preview & import for PHPUnit & Codeception tests",
+    "keywords":["tests", "tdd", "static analysis"],
+    "homepage":"https://testomat.io/",
+    "type":"library",
+    "license": "MIT",
+    "bin":["list-tests"],
+    "authors":[
+        {
+            "name":"Michael Bodnarchuk",
+            "email":"davert@sdclabs.com",
+            "homepage":"https://testomat.io"
+        }
+    ],
     "autoload": {
-      "psr-4": {
-          "Testomatio\\": "src/"
-      }
+        "psr-4": {
+            "Testomatio\\": "src/"
+        }
+    },
+    "require-dev": {
+        "codeception/codeception": "^4.1",
+        "codeception/module-asserts": "^1.0.0",
+        "codeception/module-cli": "^1.0",
+        "codeception/module-filesystem": "^1.0",
+        "hoa/console": "^3.17"
     }
 }
