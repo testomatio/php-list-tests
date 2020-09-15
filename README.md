@@ -10,7 +10,7 @@ This CLI script is also used to import tests into Testomat.io application.
 ## Installation
 
 ```
-composer require testomatio/list-tests
+composer require testomatio/list-tests --dev
 ```
 
 ## Usage

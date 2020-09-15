@@ -11,6 +11,3 @@ paths:
     output: .
     support: .
     data: .
-extensions:
-  enabled:
-    - Testomatio\Reporter\Codeception

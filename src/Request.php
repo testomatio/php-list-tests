@@ -20,7 +20,8 @@ class Request
     {
         $data = [
             'tests' => $testsData,
-            'framework' => 'codeception'
+            'framework' => 'codeception',
+            'language' => 'php'
         ];
 
         $url = $this->url . '/api/load?api_key=' . $this->apiKey;

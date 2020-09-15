@@ -30,6 +30,7 @@
         "codeception/module-asserts": "^1.0.0",
         "codeception/module-cli": "^1.0",
         "codeception/module-filesystem": "^1.0",
-        "hoa/console": "^3.17"
+        "hoa/console": "^3.17",
+        "testomatio/reporter": "0.1.1"
     }
 }
