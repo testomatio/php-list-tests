@@ -20,7 +20,7 @@ class Request
     {
         $data = [
             'tests' => $testsData,
-            'framework' => 'codeception',
+            'framework' => 'Codeception',
             'language' => 'php'
         ];
 

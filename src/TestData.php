@@ -16,7 +16,7 @@ class TestData implements \JsonSerializable
 
     public function __construct(ReflectionMethod $method)
     {
-        $this->suites = [$this->humanize($method->getImplementingClass()->getShortName())];
+        $this->suites = [$this->humanizeClass($method->getImplementingClass()->getShortName())];
         $this->name = $this->humanize($method->getName());
         $this->line = $method->getStartLine();
         $this->code = $this->formatCode($method);
@@ -57,6 +57,21 @@ class TestData implements \JsonSerializable
 
         // remove test word from name
         $name = preg_replace('/^test /', '', $name);
+
+        return ucfirst($name);
+    }
+
+    private function humanizeClass($name)
+    {
+
+        $name = preg_replace('/([A-Z]+)([A-Z][a-z])/', '\\1 \\2', $name);
+        $name = preg_replace('/([a-z\d])([A-Z])/', '\\1 \\2', $name);
+        $name = strtolower($name);
+
+        // remove test/cest word from name
+        $name = preg_replace('/\scest$/', '', $name);
+        $name = preg_replace('/\stest$/', '', $name);
+
         return ucfirst($name);
     }
 
