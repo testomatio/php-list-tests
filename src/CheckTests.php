@@ -11,6 +11,9 @@ use Roave\BetterReflection\SourceLocator\Type\FileIteratorSourceLocator;
 
 class CheckTests
 {
+    /**
+     * @var TestData[]
+     */
     protected $tests = [];
     protected $errors = [];
 
@@ -52,6 +55,10 @@ class CheckTests
         $classes = $reflector->getAllClasses();
 
         foreach ($classes as $class) {
+            if ($class->isAbstract()) {
+                continue;
+            }
+
             if (str_ends_with($class->getShortName(), 'Cest')) {
                 $this->checkCestClass($class);
             }
@@ -67,6 +74,9 @@ class CheckTests
         }
     }
 
+    /**
+     * @return TestData[]
+     */
     public function getTests()
     {
         return $this->tests;
@@ -84,7 +94,7 @@ class CheckTests
             }
             return false;
         });
-        $this->analyzeTests($tests);
+        $this->analyzeTests($class, $tests);
     }
 
     protected function checkCestClass(ReflectionClass $class)
@@ -96,13 +106,13 @@ class CheckTests
             }
             return true;
         });
-        $this->analyzeTests($tests);
+        $this->analyzeTests($class, $tests);
     }
 
     private function loadMethods(ReflectionClass $class)
     {
         try {
-            return $class->getImmediateMethods(\ReflectionMethod::IS_PUBLIC);
+            return $class->getMethods(\ReflectionMethod::IS_PUBLIC);
         } catch (\Exception $exception) {
             $className = $class->getShortName();
             $this->errors[] = "Could not load class '$className' -> ' " . $exception->getMessage();
@@ -110,14 +120,14 @@ class CheckTests
         }
     }
 
-    protected function analyzeTests($methods)
+    protected function analyzeTests(ReflectionClass $class, $methods)
     {
         foreach ($methods as $method) {
             /** @var $method ReflectionMethod  **/
             if ($method->isConstructor()) {
                 continue;
             }
-            $this->tests[] = new TestData($method);
+            $this->tests[] = new TestData($class, $method);
         }
     }
 

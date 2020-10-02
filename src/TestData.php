@@ -14,9 +14,9 @@ class TestData implements \JsonSerializable
     protected $file;
     protected $tags = [];
 
-    public function __construct(ReflectionMethod $method)
+    public function __construct(ReflectionClass $class, ReflectionMethod $method)
     {
-        $this->suites = [$this->humanizeClass($method->getImplementingClass()->getShortName())];
+        $this->suites = [$this->humanizeClass($class->getShortName())];
         $this->name = $this->humanize($method->getName());
         $this->line = $method->getStartLine();
         $this->code = $this->formatCode($method);
