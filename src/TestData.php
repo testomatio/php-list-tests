@@ -75,11 +75,10 @@ class TestData implements \JsonSerializable
         return ucfirst($name);
     }
 
-    public function update(\Closure $closure)
+    public function removeAbsolutePath($absolutePath)
     {
-        $closure->call($this);
+        $this->file = ltrim(preg_replace('~^'. preg_quote($absolutePath, '~') . '~', '', $this->file), DIRECTORY_SEPARATOR);
     }
-
 
     /**
      * Specify data which should be serialized to JSON

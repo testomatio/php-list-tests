@@ -68,9 +68,7 @@ class CheckTests
         }
 
         foreach ($this->tests as $test) {
-            $test->update(function() use ($absolutePath) {
-                $this->file = trim(str_replace($absolutePath, '', $this->file), DIRECTORY_SEPARATOR);
-            });
+            $test->removeAbsolutePath($absolutePath);
         }
     }
 
@@ -140,6 +138,10 @@ class CheckTests
         }
         if (!$isAbsolute) {
             $path = getcwd() . DIRECTORY_SEPARATOR . $path;
+        }
+        // resolve relative path parts, like ./ and ../
+        if (($realpath = realpath($path)) !== false) {
+            $path = $realpath;
         }
         return $path;
     }
