@@ -36,7 +36,7 @@ class Printer
                 if ($tags) {
                     $tags = '<comment>@' . $tags . '</comment>';
                 }
-                $output->writeln('  ' . Emoji::checkMark() . '  ' . $test->getName() . ' ' . $tags);
+                $output->writeln('   ' . Emoji::checkMark() . '  ' . $test->getName() . ' ' . $tags);
             }
             $output->writeln('');
         }

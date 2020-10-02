@@ -6,7 +6,12 @@ use Roave\BetterReflection\BetterReflection;
 use Roave\BetterReflection\Reflection\ReflectionMethod;
 use Roave\BetterReflection\Reflector\ClassReflector;
 use Roave\BetterReflection\Reflection\ReflectionClass;
+use Roave\BetterReflection\SourceLocator\SourceStubber\ReflectionSourceStubber;
+use Roave\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
+use Roave\BetterReflection\SourceLocator\Type\AutoloadSourceLocator;
+use Roave\BetterReflection\SourceLocator\Type\ComposerSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\FileIteratorSourceLocator;
+use Roave\BetterReflection\SourceLocator\Type\PhpInternalSourceLocator;
 
 
 class CheckTests
@@ -22,6 +27,15 @@ class CheckTests
         $absolutePath = $this->makeAbsolutePath($directory);
         $astLocator = (new BetterReflection())->astLocator();
 
+        $sources = [];
+
+        try {
+            $sources[] = new AutoloadSourceLocator($astLocator);
+            $sources[] = new PhpInternalSourceLocator($astLocator, new ReflectionSourceStubber());
+        } catch (\Throwable $e) {
+            $this->errors[] = "can't use autoloader, skipping classes from autoloader" . $e->getMessage();
+        }
+
         $directory = new \RecursiveDirectoryIterator($absolutePath, \FilesystemIterator::FOLLOW_SYMLINKS);
         $filter = new \RecursiveCallbackFilterIterator($directory, function ($current, $key, $iterator) use (&$foundTests) {
          // Skip hidden files and directories.
@@ -35,23 +49,24 @@ class CheckTests
              // skip special dirs of codeception
              if (str_starts_with($current->getFilename(), '_')) {
                   return false;
-              }
-             return true;
-         }
-         if (str_ends_with($current->getFilename(), 'Cest.php')) {
-             return true;
-         }
-         if (str_ends_with($current->getFilename(), 'Test.php')) {
-             return true;
-         }
-         return false;
-       });
+                  }
+                 return true;
+             }
+             if (str_ends_with($current->getFilename(), 'Cest.php')) {
+                 return true;
+             }
+             if (str_ends_with($current->getFilename(), 'Test.php')) {
+                 return true;
+             }
+             return false;
+        });
 
-       $iterator = new \RecursiveIteratorIterator($filter);
+        $iterator = new \RecursiveIteratorIterator($filter);
 
         $sourceLocator = new FileIteratorSourceLocator($iterator, $astLocator);
+        $sources[] = $sourceLocator;
 
-        $reflector = new ClassReflector($sourceLocator);
+        $reflector = new ClassReflector(new AggregateSourceLocator($sources));
         $classes = $reflector->getAllClasses();
 
         foreach ($classes as $class) {
@@ -72,27 +87,21 @@ class CheckTests
         }
     }
 
-    /**
-     * @return TestData[]
-     */
-    public function getTests()
+    private function makeAbsolutePath($path)
     {
-        return $this->tests;
-    }
-
-    protected function checkTestClass(ReflectionClass $class)
-    {
-        $methods = $this->loadMethods($class);
-        $tests = array_filter($methods, function(ReflectionMethod $method) {
-            if (str_starts_with($method->getName(), 'test')) {
-                return true;
-            }
-            if (str_contains($method->getDocComment(), '@test ')) {
-                return true;
-            }
-            return false;
-        });
-        $this->analyzeTests($class, $tests);
+        if (DIRECTORY_SEPARATOR === '/') {
+            $isAbsolute = (substr($path, 0, 1) === DIRECTORY_SEPARATOR);
+        } else {
+            $isAbsolute = preg_match('#^[A-Z]:(?![^/\\\])#i', $path) === 1;
+        }
+        if (!$isAbsolute) {
+            $path = getcwd() . DIRECTORY_SEPARATOR . $path;
+        }
+        // resolve relative path parts, like ./ and ../
+        if (($realpath = realpath($path)) !== false) {
+            $path = $realpath;
+        }
+        return $path;
     }
 
     protected function checkCestClass(ReflectionClass $class)
@@ -129,21 +138,27 @@ class CheckTests
         }
     }
 
-    private function makeAbsolutePath($path)
+    protected function checkTestClass(ReflectionClass $class)
     {
-        if (DIRECTORY_SEPARATOR === '/') {
-            $isAbsolute = (substr($path, 0, 1) === DIRECTORY_SEPARATOR);
-        } else {
-            $isAbsolute = preg_match('#^[A-Z]:(?![^/\\\])#i', $path) === 1;
-        }
-        if (!$isAbsolute) {
-            $path = getcwd() . DIRECTORY_SEPARATOR . $path;
-        }
-        // resolve relative path parts, like ./ and ../
-        if (($realpath = realpath($path)) !== false) {
-            $path = $realpath;
-        }
-        return $path;
+        $methods = $this->loadMethods($class);
+        $tests = array_filter($methods, function(ReflectionMethod $method) {
+            if (str_starts_with($method->getName(), 'test')) {
+                return true;
+            }
+            if (str_contains($method->getDocComment(), '@test ')) {
+                return true;
+            }
+            return false;
+        });
+        $this->analyzeTests($class, $tests);
+    }
+
+    /**
+     * @return TestData[]
+     */
+    public function getTests()
+    {
+        return $this->tests;
     }
 
     /**
