@@ -25,7 +25,7 @@ class Command extends SymfonyCommand
         $output->writeln('This may take some time on large projects...');
         $output->writeln('');
 
-        $checkTests = new CheckTests();
+        $checkTests = new CheckTests($output);
         $checkTests->analyze($input->getArgument('path'));
         $tests = $checkTests->getTests();
         $numTests = count($tests);

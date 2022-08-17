@@ -4,7 +4,7 @@ namespace Testomatio;
 
 use Roave\BetterReflection\BetterReflection;
 use Roave\BetterReflection\Reflection\ReflectionMethod;
-use Roave\BetterReflection\Reflector\ClassReflector;
+use Roave\BetterReflection\Reflector\DefaultReflector;
 use Roave\BetterReflection\Reflection\ReflectionClass;
 use Roave\BetterReflection\SourceLocator\SourceStubber\ReflectionSourceStubber;
 use Roave\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
@@ -12,6 +12,7 @@ use Roave\BetterReflection\SourceLocator\Type\AutoloadSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\ComposerSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\FileIteratorSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\PhpInternalSourceLocator;
+use Symfony\Component\Console\Output\OutputInterface;
 
 
 class CheckTests
@@ -21,6 +22,17 @@ class CheckTests
      */
     protected $tests = [];
     protected $errors = [];
+    /**
+     * @var OutputInterface
+     */
+    private $output;
+
+
+    public function __construct(OutputInterface $output)
+    {
+        $this->output = $output;
+    }
+
 
     public function analyze($directory)
     {
@@ -66,8 +78,10 @@ class CheckTests
         $sourceLocator = new FileIteratorSourceLocator($iterator, $astLocator);
         $sources[] = $sourceLocator;
 
-        $reflector = new ClassReflector(new AggregateSourceLocator($sources));
-        $classes = $reflector->getAllClasses();
+        $reflector = new DefaultReflector(new AggregateSourceLocator($sources));
+        $classes = $reflector->reflectAllClasses();
+
+        $this->output->writeln(sprintf("%d test classes found. Processing...", count($classes)));
 
         foreach ($classes as $class) {
             if ($class->isAbstract()) {
@@ -150,6 +164,7 @@ class CheckTests
             }
             return false;
         });
+        $this->output->write('.');
         $this->analyzeTests($class, $tests);
     }
 
