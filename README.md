@@ -2,6 +2,8 @@
 
 ![CI](https://github.com/testomatio/php-list-tests/workflows/CI/badge.svg)
 
+> List tests currently support PHP 8+, for PHP 7 look into 0.1.x branch
+
 This CLI utility prints all tests in PHP project **without executing them**.
 Easily check the number tests and get live documentation for your tests in markdown format!
 
