@@ -23,6 +23,7 @@ if (!class_exists(Application::class)) {
     exit(1);
 }
 
+error_reporting(E_ALL & ~E_USER_DEPRECATED);
 
 $application = new Application();
 
