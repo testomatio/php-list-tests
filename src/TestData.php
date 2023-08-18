@@ -51,6 +51,7 @@ class TestData implements \JsonSerializable
 
     private function humanize($name)
     {
+        $name = str_replace('_', ' ', $name);
         $name = preg_replace('/([A-Z]+)([A-Z][a-z])/', '\\1 \\2', $name);
         $name = preg_replace('/([a-z\d])([A-Z])/', '\\1 \\2', $name);
         $name = strtolower($name);
