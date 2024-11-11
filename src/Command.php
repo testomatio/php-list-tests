@@ -17,7 +17,7 @@ class Command extends SymfonyCommand
         $this->addOption('markdown', 'm',InputOption::VALUE_REQUIRED, 'Save data information to markdown file');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // ... put here the code to run in your command
 

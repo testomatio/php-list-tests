@@ -27,6 +27,6 @@ error_reporting(E_ALL & ~E_DEPRECATED);
 
 $application = new Application();
 
-$application->add(new \Testomatio\Command());
+$application->add(new \Testomatio\Command('check-tests'));
 $application->setDefaultCommand('check-tests', true);
 $application->run();
