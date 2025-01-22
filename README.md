@@ -44,7 +44,7 @@ use `PREPEND_URL` environment variable and set a base URL for tests files.
 PREPEND_URL=https://github.com/testomatio/php-list-tests/tests php vendor/bin/list-tests tests --markdown tests.md 
 ```
 
-This will generate a file similar to [test-docs.md](test-docs.md) in this repository.
+This will generate a file similar to [test-docs.md](https://github.com/testomatio/php-list-tests/blob/0.2.x/test-docs.md) in this repository.
 
 ## Import into [Testomat.io](https://testomat.io)
 
