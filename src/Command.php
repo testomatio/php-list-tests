@@ -13,7 +13,7 @@ class Command extends SymfonyCommand
 
     protected function configure()
     {
-        $this->addArgument('path', InputArgument::REQUIRED, 'Path to scan for tests');
+        $this->addArgument('path', InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'Path(s) to scan for tests');
         $this->addOption('markdown', 'm',InputOption::VALUE_REQUIRED, 'Save data information to markdown file');
     }
 
@@ -21,13 +21,17 @@ class Command extends SymfonyCommand
     {
         // ... put here the code to run in your command
 
-        $output->writeln("Printing tests from <comment>" . $input->getArgument('path') . '</comment>');
+        $output->writeln("Printing tests from <comment>" . implode(', ', $input->getArgument('path')) . '</comment>');
         $output->writeln('This may take some time on large projects...');
         $output->writeln('');
 
         $checkTests = new CheckTests($output);
-        $checkTests->analyze($input->getArgument('path'));
-        $tests = $checkTests->getTests();
+        $paths = $input->getArgument('path');
+        $tests = [];
+        foreach ($paths as $path) {
+            $checkTests->analyze($path);
+            $tests = array_merge($tests, $checkTests->getTests());
+        }
         $numTests = count($tests);
 
         $printer = new Printer($tests);
